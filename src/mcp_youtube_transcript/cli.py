@@ -5,9 +5,8 @@
 #  This software is released under the MIT License.
 #
 #  http://opensource.org/licenses/mit-license.php
-import logging
-
 import click
+import uvicorn
 
 from mcp_youtube_transcript import server
 
@@ -35,11 +34,5 @@ def main(
     https_proxy: str | None,
 ) -> None:
     """YouTube Transcript MCP server."""
-
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
-
-    logger.info("starting Youtube Transcript MCP server")
     mcp = server(webshare_proxy_username, webshare_proxy_password, http_proxy, https_proxy)
-    mcp.run()
-    logger.info("closed Youtube Transcript MCP server")
+    uvicorn.run(mcp.streamable_http_app, host="0.0.0.0", port=8080, log_level="info")
